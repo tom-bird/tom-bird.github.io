@@ -48,3 +48,14 @@ for i in range(26):
     transitions[i] = [count/row_total for count in transitions[i]]
     printable_row = [float('{:.2f}'.format(prob)) for prob in transitions[i]]
     print(printable_row, ",")
+
+fat_finger_chance = 0.3
+print()
+
+emissions = [[0]*26 for _ in range(26)]
+for i in range(26):
+    neighbours = keyboard_neighbours[chr(97+i)]
+    for neighbour in neighbours:
+        emissions[i][ord(neighbour)-97] = 1/len(neighbours)
+    printable_row = [float('{:.2f}'.format(prob)) for prob in emissions[i]]
+    print(printable_row, ",")

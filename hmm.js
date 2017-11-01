@@ -41,6 +41,7 @@ var keyboard_neighbours = {
   "m": ["n", "j", "k"]
 }
 
+// transitions go from a to z
 transition_probs = [
 [0.0, 0.02, 0.06, 0.05, 0.0, 0.02, 0.02, 0.01, 0.04, 0.0, 0.02, 0.09, 0.04, 0.17, 0.0, 0.04, 0.0, 0.14, 0.09, 0.11, 0.02, 0.03, 0.01, 0.0, 0.03, 0.0] ,
 [0.08, 0.06, 0.06, 0.0, 0.26, 0.0, 0.0, 0.0, 0.06, 0.0, 0.0, 0.05, 0.0, 0.0, 0.13, 0.0, 0.0, 0.09, 0.02, 0.0, 0.12, 0.0, 0.0, 0.0, 0.04, 0.0] ,
@@ -70,6 +71,45 @@ transition_probs = [
 [0.0, 0.0, 0.0, 0.0, 0.31, 0.0, 0.0, 0.0, 0.12, 0.0, 0.06, 0.06, 0.12, 0.0, 0.06, 0.0, 0.0, 0.06, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.06, 0.12]
 ]
 
+fat_finger_emission_probs = [
+  [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.33, 0.0, 0.33, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.33] ,
+  [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.25, 0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.25, 0.0, 0.0, 0.0, 0.0] ,
+  [0.0, 0.0, 0.0, 0.25, 0.0, 0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.25, 0.0, 0.25, 0.0, 0.0] ,
+  [0.0, 0.0, 0.2, 0.0, 0.2, 0.2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.2, 0.0, 0.0, 0.0, 0.0, 0.2, 0.0, 0.0] ,
+  [0.0, 0.0, 0.0, 0.33, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.33, 0.0, 0.0, 0.0, 0.0, 0.33, 0.0, 0.0, 0.0] ,
+  [0.0, 0.0, 0.2, 0.2, 0.0, 0.0, 0.2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.2, 0.0, 0.0, 0.0, 0.2, 0.0, 0.0, 0.0, 0.0] ,
+  [0.0, 0.2, 0.0, 0.0, 0.0, 0.2, 0.0, 0.2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.2, 0.0, 0.2, 0.0, 0.0, 0.0, 0.0] ,
+  [0.0, 0.2, 0.0, 0.0, 0.0, 0.0, 0.2, 0.0, 0.0, 0.2, 0.0, 0.0, 0.0, 0.2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.2, 0.0] ,
+  [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.33, 0.0, 0.0, 0.0, 0.33, 0.0, 0.0, 0.0, 0.0, 0.0, 0.33, 0.0, 0.0, 0.0, 0.0, 0.0] ,
+  [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.2, 0.0, 0.0, 0.2, 0.0, 0.2, 0.2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.2, 0.0, 0.0, 0.0, 0.0, 0.0] ,
+  [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.25, 0.25, 0.0, 0.25, 0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] ,
+  [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] ,
+  [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.33, 0.33, 0.0, 0.0, 0.33, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] ,
+  [0.0, 0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.25, 0.0, 0.25, 0.0, 0.0, 0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] ,
+  [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.33, 0.0, 0.0, 0.33, 0.0, 0.0, 0.0, 0.33, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] ,
+  [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] ,
+  [0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0] ,
+  [0.0, 0.0, 0.0, 0.0, 0.33, 0.33, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.33, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] ,
+  [0.2, 0.0, 0.0, 0.2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.2, 0.2, 0.0, 0.2] ,
+  [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.33, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.33, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.33, 0.0] ,
+  [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.33, 0.33, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.33, 0.0] ,
+  [0.0, 0.25, 0.25, 0.0, 0.0, 0.25, 0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] ,
+  [0.0, 0.0, 0.0, 0.0, 0.33, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.33, 0.0, 0.33, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] ,
+  [0.0, 0.0, 0.25, 0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.25] ,
+  [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.33, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.33, 0.33, 0.0, 0.0, 0.0, 0.0, 0.0] ,
+  [0.33, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.33, 0.0, 0.0, 0.0, 0.0, 0.33, 0.0, 0.0]
+]
+
+var fat_finger_chance = 0.3;
+
+let emission_probs = Array(26).fill().map(() => Array(26).fill(0));
+for (var i=0; i<26; i++) {
+  for (var j=0; j<26; j++) {
+    if (i==j) emission_probs[i][j] = 1-fat_finger_chance;
+    else emission_probs[i][j] = fat_finger_chance * fat_finger_emission_probs[i][j];
+  }
+}
+
 function fatFinger(input_letter, fat_finger_chance) {
   // transform the input letter into one its keyboard neighbours
   // with probability fat finger chance
@@ -88,7 +128,14 @@ function randInt(n) {
 
 function convertProbToColourIndex(prob) {
   return Math.min(Math.floor(prob*10), 9);
+}
 
+function numToLetter(num) {
+  return String.fromCharCode(97+num);
+}
+
+function letterToNum(letter) {
+  return letter.charCodeAt(0) - 97;
 }
 
 var Grid = function(cell_size, width, height, cnv, div){
@@ -141,18 +188,69 @@ Grid.prototype.colourGrid = function() {
   }
 }
 
+Grid.prototype.setColours = function(probs) {
+  for (var i=0; i<this.width; i++) {
+    for (var j=0; j<this.height; j++) {
+      hidden_states.cell_colours[[i, j]] = convertProbToColourIndex(probs[j][i]);
+    }
+  }
+}
+
+function smooth() {
+
+}
+
+function forward(observations, priors) {
+  // we will return a matrix of size D X N
+  // where D is number of possible latent states, N is number of observations
+  // p(y_t|x_1:t) = sum over y_t-1 [p(x_t)]
+  let posteriors = Array(26).fill().map(() => Array(observations.length).fill(0));
+  for (var i=0; i<observations.length; i++) {
+    var col_total = 0;
+    for (var j=0; j<26; j++) {
+      if (i==0) {
+        // this is our prior on the latent state
+        posteriors[j][i] = priors[j]*emission_probs[j][observations[i]];
+      }
+      else {
+        p = 0
+        for (var k=0; k<26; k++) {
+          // k is our sum over possible y_t-1 values
+
+          p += posteriors[k][i-1] * transition_probs[k][j] * emission_probs[j][observations[i]];
+        }
+        posteriors[j][i] = p;
+      }
+      col_total += posteriors[j][i];
+    }
+    // now normalise the column
+    for (var j=0; j<26; j++) posteriors[j][i] /= col_total;
+  }
+  return posteriors
+}
+
+function backward() {
+
+}
+
 
 // ----------------------------------------------------------------------
 // MAIN CODE
 
+// we can use forward backward to calculate the posterior over hidden states
+// we can use viterbi to calculate the most likely sequence of hidden states
+
 var hidden_states_div = document.getElementById("hiddenStatesDiv");
 var hidden_states_canvas = document.getElementById("hiddenStatesCanvas");
-var hidden_states = new Grid(20, 49, 26, hidden_states_canvas, hidden_states_canvas);
+var hidden_states = new Grid(20, 10, 26, hidden_states_canvas, hidden_states_canvas);
 
-for (var i=0; i<50; i++) {
-  for (var j=0; j<26; j++) {
-    hidden_states.cell_colours[[i, j]] = convertProbToColourIndex(Math.random());
-  }
+var input = "hellothwre";
+var observations = [];
+for (var n in input) {
+  observations.push(letterToNum(input[n]));
 }
-
+var priors = Array(26).fill(1/26);
+var posteriors = forward(observations, priors)
+hidden_states.setColours(posteriors);
 hidden_states.colourGrid();
+console.log(posteriors);
