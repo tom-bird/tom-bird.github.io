@@ -171,6 +171,43 @@ Grid.prototype.indexToPositionY = function(yIndex) {
   return this.min_y + yIndex*this.cell_size;
 }
 
+Grid.prototype.drawGridlines = function() {
+  for (i=1; i<this.width; i++){
+    this.ctx.beginPath();
+    this.ctx.setLineDash([this.cell_size/6, this.cell_size/6]);
+    this.ctx.strokeStyle = 'gray';
+    this.ctx.lineWidth = this.cell_size/100;
+
+    this.ctx.moveTo(this.min_x + i*this.cell_size, this.min_y);
+    this.ctx.lineTo(this.min_x + i*this.cell_size, this.max_y);
+
+    this.ctx.stroke();
+    this.ctx.closePath();
+  }
+
+  for (j=1; j<this.height; j++){
+    this.ctx.beginPath();
+    this.ctx.setLineDash([this.cell_size/6, this.cell_size/6]);
+    this.ctx.strokeStyle = 'gray';
+    this.ctx.lineWidth = this.cell_size/200;
+
+    this.ctx.moveTo(this.min_x, this.min_y + j*this.cell_size);
+    this.ctx.lineTo(this.max_x, this.min_y + j*this.cell_size);
+
+    this.ctx.stroke();
+    this.ctx.closePath();
+  }
+}
+
+Grid.prototype.writeLatentLetters = function() {
+  this.ctx.fillStyle = "black";
+  this.ctx.font = "16px Arial";
+  for (j=0; j<this.height; j++){
+    console.log(this.min_x-this.cell_size);
+    this.ctx.fillText(numToLetter(j), this.min_x-this.cell_size, this.min_y + (j+0.75)*this.cell_size);
+  }
+}
+
 Grid.prototype.colourCell = function(leftX, topY, colour, overall=true) {
   if (this.inGrid(leftX, topY)){
     this.ctx.beginPath();
@@ -194,10 +231,6 @@ Grid.prototype.setColours = function(probs) {
       hidden_states.cell_colours[[i, j]] = convertProbToColourIndex(probs[j][i]);
     }
   }
-}
-
-function smooth() {
-
 }
 
 function forward(observations, priors) {
@@ -229,10 +262,45 @@ function forward(observations, priors) {
   return posteriors
 }
 
-function backward() {
-
+function backward(observations) {
+  // we will return a matrix of size D X N
+  // where D is number of possible latent states, N is number of observations
+  let back_messages = Array(26).fill().map(() => Array(observations.length).fill(0));
+  for (var i=observations.length-1; i>=0; i--) {
+    var col_total = 0;
+    for (var j=0; j<26; j++) {
+      if (i==observations.length-1) {
+        back_messages[j][i] = 1;
+      }
+      else {
+        p = 0
+        for (var k=0; k<26; k++) {
+          // k is our sum over possible y_t+1 values
+          p += back_messages[k][i+1] * transition_probs[j][k] * emission_probs[k][observations[i+1]];
+        }
+        back_messages[j][i] = p;
+      }
+    }
+  }
+  return back_messages
 }
 
+function smooth(observations, priors) {
+  var forward_messages = forward(observations, priors);
+  var backward_messages = backward(observations);
+
+  let posteriors = Array(26).fill().map(() => Array(observations.length).fill(0));
+  for (var i=0; i<observations.length; i++) {
+    var col_total = 0;
+    for (var j=0; j<26; j++) {
+      col_total += forward_messages[j][i]*backward_messages[j][i];
+    }
+    for (var j=0; j<26; j++) {
+      posteriors[j][i] = forward_messages[j][i]*backward_messages[j][i]/col_total;
+    }
+  }
+  return posteriors;
+}
 
 // ----------------------------------------------------------------------
 // MAIN CODE
@@ -242,15 +310,19 @@ function backward() {
 
 var hidden_states_div = document.getElementById("hiddenStatesDiv");
 var hidden_states_canvas = document.getElementById("hiddenStatesCanvas");
-var hidden_states = new Grid(20, 10, 26, hidden_states_canvas, hidden_states_canvas);
+var hidden_states = new Grid(20, 32, 26, hidden_states_canvas, hidden_states_canvas);
 
-var input = "hellothwre";
+var input = "helkothwremynamristomamdilikeypu";
 var observations = [];
 for (var n in input) {
   observations.push(letterToNum(input[n]));
 }
 var priors = Array(26).fill(1/26);
-var posteriors = forward(observations, priors)
+var forward_msg = forward(observations, priors);
+var back_probs = backward(observations);
+var posteriors = smooth(observations, priors);
 hidden_states.setColours(posteriors);
 hidden_states.colourGrid();
-console.log(posteriors);
+hidden_states.drawGridlines();
+hidden_states.writeLatentLetters();
+console.log(back_probs);
