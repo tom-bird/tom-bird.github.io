@@ -172,26 +172,26 @@ Grid.prototype.indexToPositionY = function(yIndex) {
 }
 
 Grid.prototype.drawGridlines = function() {
-  for (i=1; i<this.width; i++){
+  for (i=-1; i<=this.width; i++){
     this.ctx.beginPath();
     this.ctx.setLineDash([this.cell_size/6, this.cell_size/6]);
     this.ctx.strokeStyle = 'gray';
     this.ctx.lineWidth = this.cell_size/100;
 
     this.ctx.moveTo(this.min_x + i*this.cell_size, this.min_y);
-    this.ctx.lineTo(this.min_x + i*this.cell_size, this.max_y);
+    this.ctx.lineTo(this.min_x + i*this.cell_size, this.max_y+this.cell_size);
 
     this.ctx.stroke();
     this.ctx.closePath();
   }
 
-  for (j=1; j<this.height; j++){
+  for (j=0; j<=this.height+1; j++){
     this.ctx.beginPath();
     this.ctx.setLineDash([this.cell_size/6, this.cell_size/6]);
     this.ctx.strokeStyle = 'gray';
     this.ctx.lineWidth = this.cell_size/200;
 
-    this.ctx.moveTo(this.min_x, this.min_y + j*this.cell_size);
+    this.ctx.moveTo(this.min_x-this.cell_size, this.min_y + j*this.cell_size);
     this.ctx.lineTo(this.max_x, this.min_y + j*this.cell_size);
 
     this.ctx.stroke();
@@ -201,10 +201,18 @@ Grid.prototype.drawGridlines = function() {
 
 Grid.prototype.writeLatentLetters = function() {
   this.ctx.fillStyle = "black";
-  this.ctx.font = "16px Arial";
+  this.ctx.font = "14px Arial";
   for (j=0; j<this.height; j++){
     console.log(this.min_x-this.cell_size);
-    this.ctx.fillText(numToLetter(j), this.min_x-this.cell_size, this.min_y + (j+0.75)*this.cell_size);
+    this.ctx.fillText(numToLetter(j), this.min_x-0.75*this.cell_size, this.min_y + (j+0.75)*this.cell_size);
+  }
+}
+
+Grid.prototype.writePredictedLatentLetters = function(predicted_latents) {
+  this.ctx.fillStyle = "black";
+  this.ctx.font = "14px Arial";
+  for (j=0; j<this.width; j++){
+    this.ctx.fillText(numToLetter(predicted_latents[j]), this.min_x+(j+0.3)*this.cell_size, this.max_y + 0.75*this.cell_size);
   }
 }
 
@@ -228,7 +236,7 @@ Grid.prototype.colourGrid = function() {
 Grid.prototype.setColours = function(probs) {
   for (var i=0; i<this.width; i++) {
     for (var j=0; j<this.height; j++) {
-      hidden_states.cell_colours[[i, j]] = convertProbToColourIndex(probs[j][i]);
+      this.cell_colours[[i, j]] = convertProbToColourIndex(probs[j][i]);
     }
   }
 }
@@ -302,6 +310,22 @@ function smooth(observations, priors) {
   return posteriors;
 }
 
+function mostLikelySequence(posteriors) {
+  var max_indices = [];
+  for (var i=0; i<posteriors[0].length; i++) {
+    var col_max = -1;
+    var col_max_index = -1;
+    for (var j=0; j<posteriors.length; j++) {
+      if (posteriors[j][i] > col_max) {
+        col_max_index = j;
+        col_max = posteriors[j][i];
+      }
+    }
+    max_indices.push(col_max_index);
+  }
+  return max_indices;
+}
+
 // ----------------------------------------------------------------------
 // MAIN CODE
 
@@ -310,19 +334,25 @@ function smooth(observations, priors) {
 
 var hidden_states_div = document.getElementById("hiddenStatesDiv");
 var hidden_states_canvas = document.getElementById("hiddenStatesCanvas");
-var hidden_states = new Grid(20, 32, 26, hidden_states_canvas, hidden_states_canvas);
 
-var input = "helkothwremynamristomamdilikeypu";
-var observations = [];
-for (var n in input) {
-  observations.push(letterToNum(input[n]));
+function runFatFinger() {
+  var input = document.getElementById("inputText").value;
+
+  var hidden_states = new Grid(20, input.length, 26, hidden_states_canvas, hidden_states_canvas);
+  hidden_states.ctx.clearRect(0, 0, hidden_states_canvas.width, hidden_states_canvas.height);
+  var observations = [];
+  for (var n in input) {
+    observations.push(letterToNum(input[n]));
+  }
+  var priors = Array(26).fill(1/26);
+  var forward_msg = forward(observations, priors);
+  var back_probs = backward(observations);
+  var posteriors = smooth(observations, priors);
+  var predicted_latents = mostLikelySequence(posteriors);
+  hidden_states.setColours(posteriors);
+  hidden_states.colourGrid();
+  hidden_states.writeLatentLetters();
+  hidden_states.writePredictedLatentLetters(predicted_latents);
+  hidden_states.drawGridlines();
+
 }
-var priors = Array(26).fill(1/26);
-var forward_msg = forward(observations, priors);
-var back_probs = backward(observations);
-var posteriors = smooth(observations, priors);
-hidden_states.setColours(posteriors);
-hidden_states.colourGrid();
-hidden_states.drawGridlines();
-hidden_states.writeLatentLetters();
-console.log(back_probs);
