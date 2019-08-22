@@ -74,7 +74,7 @@ Grid.prototype.colourGrid = function() {
 }
 
 Grid.prototype.initialiseForest = function(initial_bears, initial_jacks, initial_saplings, initial_trees, initial_elders,
-  prob_bear_moves, prob_jack_moves, prob_sap_matures, prob_tree_matures, prob_tree_seeds_sapling) {
+  prob_bear_moves, prob_bear_dies, prob_jack_moves, prob_sap_matures, prob_tree_matures, prob_tree_seeds_sapling) {
   total_cells = this.num_cells*this.num_cells;
 
   var numBears = Math.floor(initial_bears*total_cells);
@@ -87,6 +87,7 @@ Grid.prototype.initialiseForest = function(initial_bears, initial_jacks, initial
   var initial_numbers = [numBears, numJacks, numSaplings, numTrees, numElders, numDirt];
 
   this.prob_bear_moves = prob_bear_moves;
+  this.prob_bear_dies = prob_bear_dies;
   this.prob_jack_moves = prob_jack_moves;
   this.prob_sap_matures = prob_sap_matures;
   this.prob_tree_matures = prob_tree_matures;
@@ -124,6 +125,14 @@ Grid.prototype.initialiseForest = function(initial_bears, initial_jacks, initial
 }
 
 Grid.prototype.iterateBear = function(x, y) {
+  if (this.covered_values[[x,y]] == cellEnum.DIRT) {
+	  // bear on dirt - may die
+	  if (Math.random() < this.prob_bear_dies) {
+		  this.forest[[x, y]] = cellEnum.DIRT;
+		  return;
+	  }
+  }
+
   if (Math.random() < this.prob_bear_moves) {
     var move = moveMap[randInt(4)];
     var dx = move[0];
@@ -132,10 +141,9 @@ Grid.prototype.iterateBear = function(x, y) {
     if (this.inGrid(x+dx, y+dy)) {
       var destination = this.forest[[x+dx, y+dy]];
       if (destination == cellEnum.BEAR) return;
-
       this.forest[[x, y]] = this.covered_values[[x, y]];
       delete this.covered_values[[x, y]];
-
+      
       if (destination === cellEnum.JACK) {
         // gobbled
         this.covered_values[[x+dx, y+dy]] = cellEnum.DIRT;
@@ -240,17 +248,18 @@ function randInt(n) {
 
 var main_div = document.getElementById("main-canvas-div");
 var main_canvas = document.getElementById("main-canvas");
-var gridForest = new Grid(10, 90, main_canvas, main_div);
+var gridForest = new Grid(10, 60, main_canvas, main_div);
 
 var months = 10;
 
-var initial_bears = 0.001;
+var initial_bears = 0.01;
 var initial_jacks = 0.02;
 var initial_saplings = 0.1;
 var initial_trees = 0.3;
 var initial_elders = 0.1;
 
 var prob_bear_moves = 0.4;
+var prob_bear_dies = 0.005;
 var prob_jack_moves = 0.2;
 var prob_sap_matures = 0.1;
 var prob_tree_matures = 0.01;
@@ -259,6 +268,5 @@ var prob_tree_seeds_sapling = 0.01;
 var lumber_collected;
 var jacks_eaten;
 
-gridForest.initialiseForest(initial_bears, initial_jacks, initial_saplings, initial_trees, initial_elders,
-  prob_bear_moves, prob_jack_moves, prob_sap_matures, prob_tree_matures, prob_tree_seeds_sapling);
-gridForest.evolveForest(0.01);
+gridForest.initialiseForest(initial_bears, initial_jacks, initial_saplings, initial_trees, initial_elders, prob_bear_moves, prob_bear_dies, prob_jack_moves, prob_sap_matures, prob_tree_matures, prob_tree_seeds_sapling);
+gridForest.evolveForest(0.05);

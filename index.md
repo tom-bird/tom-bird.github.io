@@ -23,6 +23,6 @@ More information on [Google Scholar](https://scholar.google.com/citations?view_o
 
 [Forest simulator](./forest-sim.html)
 
-### Contact
+## Contact
 thomas dot bird at cs.ucl.ac.uk
 
