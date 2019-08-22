@@ -1,0 +1,15 @@
+title: Tom Bird
+logo: /assets/img/pic.jpg
+description: Machine Learning researcher, PhD student at UCL
+show_downloads: false
+google_analytics:
+theme: jekyll-theme-minimal
+
+defaults:
+  # _posts
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: single
+      author_profile: false
