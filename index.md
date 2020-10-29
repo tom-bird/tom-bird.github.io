@@ -1,7 +1,7 @@
 ---
 layout: default
 ---
-I'm currently working towards a PhD in Machine Learning at University College London, under the supervision of [David Barber](http://web4.cs.ucl.ac.uk/staff/D.Barber/pmwiki/pmwiki.php). In 2020 I interned at Google, researching neural compression for 3D data.
+I'm currently working towards a PhD in Machine Learning at University College London, under the supervision of [David Barber](http://web4.cs.ucl.ac.uk/staff/D.Barber/pmwiki/pmwiki.php). In 2020 I interned at Google, researching neural compression for 3D scene data.
 
 My interests include generative modelling, compression and variational methods.
 
