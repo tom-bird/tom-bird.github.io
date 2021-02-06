@@ -18,7 +18,6 @@ My interests include generative modelling, compression and variational methods.
 
 ## Preprints
 
-* **<span style="font-size:1.1em">Reducing the computational cost of deep generative models with binary neural networks</span>**[[PDF](https://arxiv.org/pdf/2010.13476.pdf)]<br />**T Bird**, FH Kingma, D Barber
 * **<span style="font-size:1.1em">Stochastic variational optimization</span>** [[PDF](https://arxiv.org/pdf/1809.04855.pdf)] <br />**T Bird**, J Kunze, D Barber
 * **<span style="font-size:1.1em">Variational f-divergence minimization</span>**[[PDF](https://arxiv.org/pdf/1907.11891.pdf)]<br />M Zhang, **T Bird**, R Habib, T Zu, D Barber
 
