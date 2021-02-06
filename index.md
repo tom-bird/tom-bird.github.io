@@ -8,6 +8,8 @@ My interests include generative modelling, compression and variational methods.
 
 ## Publications
 
+* **<span style="font-size:1.1em;">Reducing the Computational Cost of Deep Generative Models with Binary Neural Networks</span>**[[PDF](https://arxiv.org/pdf/2010.13476.pdf)]
+<br />**T Bird**, F Kingma, D Barber<br />ICLR 2021
 * **<span style="font-size:1.1em;">HiLLoC: lossless image compression with hierarchical latent variable models</span>**[[PDF](https://arxiv.org/pdf/1912.09953.pdf)]
 <br />J Townsend & **T Bird** (equal contribution), J Kunze, D Barber<br />ICLR 2020
 * **<span style="font-size:1.1em;">Practical lossless compression with latent variables using bits back coding</span>**[[PDF](https://arxiv.org/pdf/1901.04866.pdf)]
