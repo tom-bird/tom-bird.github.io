@@ -9,7 +9,7 @@ My general research interests include generative modelling, compression and repr
 ## Publications
 
 * **<span style="font-size:1.1em;">3D Scene Compression through Entropy Penalized Neural Representation Functions</span>**[[PDF](https://arxiv.org/pdf/2104.12456.pdf)]
-<br />**T Bird**, J Balle´, S Singh, P Chou<br />PCS 2021 (Learning-based Image Coding special session)
+<br />**T Bird**, J Ballé, S Singh, P Chou<br />PCS 2021 (Learning-based Image Coding special session)
 * **<span style="font-size:1.1em;">Reducing the Computational Cost of Deep Generative Models with Binary Neural Networks</span>**[[PDF](https://arxiv.org/pdf/2010.13476.pdf)]
 <br />**T Bird**, F Kingma, D Barber<br />ICLR 2021
 * **<span style="font-size:1.1em;">HiLLoC: lossless image compression with hierarchical latent variable models</span>**[[PDF](https://arxiv.org/pdf/1912.09953.pdf)]
