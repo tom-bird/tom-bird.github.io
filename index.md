@@ -3,7 +3,7 @@ layout: default
 ---
 I'm currently working towards a PhD in Machine Learning at University College London, under the supervision of [David Barber](http://web4.cs.ucl.ac.uk/staff/D.Barber/pmwiki/pmwiki.php). In 2020 and 2021 I interned at Google research, working on neural compression and incremental learning.
 
-My general research interests include generative modelling, compression and represenation learning.
+My general research interests include generative modelling, compression and representation learning.
 
 
 ## Publications
